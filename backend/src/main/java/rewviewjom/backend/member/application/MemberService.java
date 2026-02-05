@@ -7,10 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import rewviewjom.backend.global.exception.BusinessException;
 import rewviewjom.backend.global.exception.ErrorCode;
 import rewviewjom.backend.global.jwt.JwtTokenProvider;
-import rewviewjom.backend.member.application.dto.LoginRequest;
-import rewviewjom.backend.member.application.dto.LoginResponse;
-import rewviewjom.backend.member.application.dto.MemberResponse;
-import rewviewjom.backend.member.application.dto.SignUpRequest;
+import rewviewjom.backend.member.application.dto.*;
 import rewviewjom.backend.member.domain.Member;
 import rewviewjom.backend.member.domain.repository.MemberRepository;
 
@@ -56,6 +53,18 @@ public class MemberService {
     public MemberResponse getMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        return MemberResponse.from(member);
+    }
+
+    @Transactional
+    public MemberResponse updateNickname(Long memberId, MemberUpdateRequest request) {
+        if (memberRepository.existsByNickname(request.getNickname())) {
+            throw new BusinessException(ErrorCode.DUPLICATE_NICKNAME);
+        }
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        member.updateNickname(request.getNickname());
+
         return MemberResponse.from(member);
     }
 }

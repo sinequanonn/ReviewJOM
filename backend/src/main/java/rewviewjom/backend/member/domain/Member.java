@@ -36,4 +36,8 @@ public class Member extends BaseEntity {
     public void softDelete() {
         this.deleted = true;
     }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

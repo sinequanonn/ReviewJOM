@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import rewviewjom.backend.global.response.ApiResponse;
 import rewviewjom.backend.member.application.MemberService;
-import rewviewjom.backend.member.application.dto.LoginRequest;
-import rewviewjom.backend.member.application.dto.LoginResponse;
-import rewviewjom.backend.member.application.dto.MemberResponse;
-import rewviewjom.backend.member.application.dto.SignUpRequest;
+import rewviewjom.backend.member.application.dto.*;
 
 @RestController
 @RequestMapping("/api/v1/members")
@@ -30,6 +27,13 @@ public class MemberController {
     @GetMapping("/me")
     public ApiResponse<MemberResponse> getMyInfo(@RequestAttribute("memberId") Long memberId) {
         return ApiResponse.success(memberService.getMember(memberId));
+    }
+
+    @PatchMapping("/me")
+    public ApiResponse<MemberResponse> updateNickname(
+            @RequestAttribute("memberId") Long memberId,
+            @RequestBody MemberUpdateRequest request) {
+        return ApiResponse.success(memberService.updateNickname(memberId, request));
     }
 
     @GetMapping("/{id}")
