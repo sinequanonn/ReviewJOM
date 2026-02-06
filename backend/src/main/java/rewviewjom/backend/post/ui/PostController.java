@@ -2,13 +2,16 @@ package rewviewjom.backend.post.ui;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.JpaSort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import rewviewjom.backend.global.response.ApiResponse;
+import rewviewjom.backend.global.response.PageResponse;
 import rewviewjom.backend.post.application.PostService;
-import rewviewjom.backend.post.application.dto.PostCreateRequest;
-import rewviewjom.backend.post.application.dto.PostResponse;
-import rewviewjom.backend.post.application.dto.PostStatusUpdateRequest;
-import rewviewjom.backend.post.application.dto.PostUpdateRequest;
+import rewviewjom.backend.post.application.dto.*;
+import rewviewjom.backend.post.domain.PostStatus;
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -22,6 +25,26 @@ public class PostController {
             @RequestAttribute("memberId") Long memberId,
             @Valid @RequestBody PostCreateRequest request) {
         return ApiResponse.success(postService.createPost(memberId, request));
+    }
+
+    @GetMapping("/{postId}")
+    public ApiResponse<PostResponse> getPost(@PathVariable Long postId) {
+        return ApiResponse.success(postService.getPost(postId));
+    }
+
+    @GetMapping
+    public ApiResponse<PageResponse<PostListResponse>> getPosts(
+            @RequestParam(required = false) PostStatus status,
+            @RequestParam(required = false) String keyword,
+            @PageableDefault(size = 10) Pageable pageable) {
+        return ApiResponse.success(postService.getPosts(status, keyword, pageable));
+    }
+
+    @GetMapping("/me")
+    public ApiResponse<PageResponse<PostListResponse>> getMyPosts(
+            @RequestAttribute("memberId") Long memberId,
+            @PageableDefault(size = 10) Pageable pageable) {
+        return ApiResponse.success(postService.getMyPosts(memberId, pageable));
     }
 
     @PutMapping("/{postId}")
