@@ -14,6 +14,10 @@ import rewviewjom.backend.post.application.dto.*;
 import rewviewjom.backend.post.domain.Post;
 import rewviewjom.backend.post.domain.PostStatus;
 import rewviewjom.backend.post.domain.repository.PostRepository;
+import rewviewjom.backend.tag.application.TagService;
+import rewviewjom.backend.tag.domain.Tag;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,6 +26,22 @@ public class PostService {
 
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
+    private final TagService tagService;
+
+    @Transactional
+    public PostResponse createPost(Long memberId, PostCreateRequest request) {
+        Member member = findMemberById(memberId);
+        List<Tag> tags = tagService.getTagsByIds(request.getTagIds());
+
+        Post post = Post.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .member(member)
+                .build();
+
+        tags.forEach(post::addTag);
+        return PostResponse.from(postRepository.save(post));
+    }
 
     public PostResponse getPost(Long postId) {
         Post post = postRepository.findById(postId)
@@ -44,24 +64,15 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse createPost(Long memberId, PostCreateRequest request) {
-        Member member = findMemberById(memberId);
-
-        Post post = Post.builder()
-                .title(request.getTitle())
-                .content(request.getContent())
-                .member(member)
-                .build();
-
-        return PostResponse.from(postRepository.save(post));
-    }
-
-    @Transactional
     public PostResponse updatePost(Long memberId, Long postId, PostUpdateRequest request) {
         Post post = findPostById(postId);
-
         validateAuthor(post, memberId);
+
+        List<Tag> tags = tagService.getTagsByIds(request.getTagIds());
+
         post.update(request.getTitle(), request.getContent());
+        post.clearTags();
+        tags.forEach(post::addTag);
 
         return PostResponse.from(post);
     }
