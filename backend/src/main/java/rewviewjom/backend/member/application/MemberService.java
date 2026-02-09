@@ -51,8 +51,7 @@ public class MemberService {
     }
 
     public MemberResponse getMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        Member member = findByMemberId(memberId);
         return MemberResponse.from(member);
     }
 
@@ -61,10 +60,14 @@ public class MemberService {
         if (memberRepository.existsByNickname(request.getNickname())) {
             throw new BusinessException(ErrorCode.DUPLICATE_NICKNAME);
         }
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        Member member = findByMemberId(memberId);
         member.updateNickname(request.getNickname());
 
         return MemberResponse.from(member);
+    }
+
+    private Member findByMemberId(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
     }
 }
