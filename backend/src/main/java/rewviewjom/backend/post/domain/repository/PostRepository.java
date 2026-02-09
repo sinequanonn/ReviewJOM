@@ -10,7 +10,8 @@ import rewviewjom.backend.post.domain.PostStatus;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @Query(value = "SELECT DISTINCT p FROM Post p " +
+    @Query(value = "SELECT DISTINCT p " +
+            "FROM Post p " +
             "LEFT JOIN FETCH p.member m " +
             "WHERE (:status IS NULL OR p.status = :status) " +
             "AND (:keyword IS NULL OR p.title LIKE %:keyword% OR p.content LIKE %:keyword%) " +

@@ -24,6 +24,8 @@ public class PostListResponse {
     public static PostListResponse from(Post post) {
         return PostListResponse.builder()
                 .id(post.getId())
+                .title(post.getTitle())
+                .commentCount(post.getCommentCount())
                 .status(post.getStatus())
                 .member(MemberResponse.from(post.getMember()))
                 .tags(post.getPostTags().stream()
