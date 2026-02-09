@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.SQLRestriction;
 import rewviewjom.backend.global.BaseEntity;
 import rewviewjom.backend.member.domain.Member;
@@ -35,6 +36,9 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostTag> postTags = new ArrayList<>();
+
+    @Formula("(SELECT count(1) FROM comment c WHERE c.post_id = id AND c.deleted = false)")
+    private int commentCount;
 
     private boolean deleted = false;
 
