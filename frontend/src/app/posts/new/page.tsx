@@ -16,7 +16,11 @@ export default function NewPostPage() {
   }
 
   if (isLoading) {
-    return <p style={{ textAlign: "center", color: "var(--muted)", padding: "3rem 0" }}>로딩 중...</p>;
+    return (
+      <div className="newpost-container">
+        <p style={{ textAlign: "center", color: "var(--muted)", padding: "3rem 0" }}>로딩 중...</p>
+      </div>
+    );
   }
 
   async function handleSubmit(data: { title: string; content: string; tagIds: number[] }) {
@@ -25,9 +29,26 @@ export default function NewPostPage() {
   }
 
   return (
-    <div>
-      <h1 style={{ fontSize: "1.25rem", fontWeight: 700, marginBottom: "1.5rem" }}>새 게시글 작성</h1>
-      <PostForm onSubmit={handleSubmit} submitLabel="등록" />
+    <div className="newpost-container">
+      {/* Header */}
+      <div className="newpost-header">
+        <h1>New Review</h1>
+        <p>Share your code and get feedback from the community.</p>
+      </div>
+
+      {/* Body */}
+      <div className="newpost-body">
+        {/* Main Form */}
+        <PostForm
+          onSubmit={handleSubmit}
+          submitLabel="Publish Review"
+          onCancel={() => router.back()}
+        />
+
+        {/* Sidebar */}
+        <div className="newpost-sidebar">
+        </div>
+      </div>
     </div>
   );
 }
