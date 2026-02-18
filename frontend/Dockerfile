@@ -1,7 +1,7 @@
 # Stage 1: Dependencies
 FROM node:23-alpine AS deps
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package.json ./
 RUN npm install
 
 # Stage 2: Build
