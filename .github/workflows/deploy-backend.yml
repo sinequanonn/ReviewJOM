@@ -42,14 +42,14 @@ jobs:
             git pull origin main
 
             # Create .env file for docker-compose
-            cat > backend/.env << 'ENVEOF'
+            cat > backend/docker/.env << 'ENVEOF'
             DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             ENVEOF
 
             # Build and deploy
-            cd backend
+            cd backend/docker
             docker compose -f docker-compose.prod.yml down
             docker compose -f docker-compose.prod.yml up -d --build
 
